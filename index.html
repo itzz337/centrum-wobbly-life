@@ -1,0 +1,520 @@
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wobbly Life Centrum</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+--yellow:#FFD166;
+--blue:#118AB2;
+--green:#06D6A0;
+--pink:#EF476F;
+--dark:#26547C;
+--bg:#F0F4F8;
+}
+
+* {
+box-sizing:border-box;
+margin:0;
+padding:0;
+font-family:'Fredoka',sans-serif;
+}
+
+html {scroll-behavior:smooth;}
+
+body {
+background:var(--bg);
+color:var(--dark);
+}
+
+header {
+background:linear-gradient(135deg,var(--yellow),var(--blue));
+text-align:center;
+padding:35px 15px;
+}
+
+header h1 {
+font-size:38px;
+color:white;
+text-shadow:3px 3px var(--dark);
+}
+
+header p {margin-top:10px;}
+
+nav {
+position:sticky;
+top:0;
+z-index:20;
+background:var(--dark);
+display:flex;
+justify-content:center;
+flex-wrap:wrap;
+gap:10px;
+padding:14px;
+}
+
+nav a {
+color:white;
+text-decoration:none;
+font-weight:bold;
+padding:8px 15px;
+border-radius:10px;
+}
+
+nav a:hover {
+background:var(--yellow);
+color:var(--dark);
+}
+
+.container {
+max-width:1100px;
+margin:30px auto;
+padding:0 15px;
+}
+
+.card {
+background:white;
+padding:25px;
+border:3px solid var(--dark);
+border-radius:20px;
+margin-bottom:30px;
+box-shadow:0 5px 15px rgba(38,84,124,.1);
+}
+
+h2 {
+color:var(--blue);
+margin-bottom:15px;
+}
+
+.grid {
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+gap:13px;
+margin-top:20px;
+}
+
+/* KINO */
+
+.movie-item {
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+background:#f0f4f8;
+border:2px solid #d8e3ef;
+padding:15px;
+border-radius:12px;
+text-decoration:none;
+color:var(--dark);
+font-weight:bold;
+}
+
+.movie-item:hover {background:var(--yellow);}
+
+.watch-btn {
+background:var(--pink);
+color:white;
+padding:8px 12px;
+border-radius:8px;
+white-space:nowrap;
+}
+
+/* PORADNIKI */
+
+.guide-item {
+padding:15px;
+background:#f0f4f8;
+border-radius:12px;
+border:2px solid #d8e3ef;
+text-decoration:none;
+color:var(--dark);
+font-weight:bold;
+}
+
+.guide-item:hover {background:var(--yellow);}
+
+/* PRACE */
+
+.job-card {
+background:#f0f4f8;
+padding:15px;
+border:2px solid #d8e3ef;
+border-radius:14px;
+}
+
+.job-card h3 {
+font-size:17px;
+margin-bottom:12px;
+}
+
+.job-card button {
+width:100%;
+padding:11px;
+background:var(--green);
+color:var(--dark);
+border:2px solid var(--dark);
+border-radius:10px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.job-card button:hover {background:var(--yellow);}
+
+.job-pay {
+display:none;
+margin-top:12px;
+padding:10px;
+background:white;
+border-radius:10px;
+text-align:center;
+font-weight:bold;
+}
+
+.job-pay.show {display:block;}
+
+/* MAPA */
+
+.map-container {
+position:relative;
+width:100%;
+margin:20px auto;
+border:3px solid var(--dark);
+border-radius:15px;
+overflow:hidden;
+}
+
+.map-container img {
+display:block;
+width:100%;
+}
+
+button.map-pin {
+display:none;
+position:absolute;
+width:24px!important;
+min-width:24px!important;
+max-width:24px!important;
+height:24px!important;
+min-height:24px!important;
+padding:0!important;
+margin:0!important;
+font-size:13px!important;
+line-height:18px;
+border-radius:50%;
+background:var(--yellow);
+border:2px solid var(--dark);
+transform:translate(-50%,-50%);
+cursor:pointer;
+z-index:5;
+}
+
+button.map-pin.active {display:block;}
+
+.islands {
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+gap:10px;
+margin-top:20px;
+}
+
+.islands button {
+background:var(--blue);
+color:white;
+border:2px solid var(--dark);
+padding:14px;
+border-radius:12px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.islands button:hover {
+background:var(--yellow);
+color:var(--dark);
+}
+
+.map-info {
+display:none;
+background:#f0f4f8;
+border:2px solid var(--dark);
+border-radius:12px;
+padding:18px;
+margin-top:20px;
+}
+
+.map-info.active {display:block;}
+
+.map-job {
+padding:9px;
+margin:6px 0;
+background:white;
+border-radius:8px;
+}
+
+footer {
+background:var(--dark);
+color:white;
+text-align:center;
+padding:25px;
+margin-top:30px;
+}
+
+@media(max-width:600px) {
+header h1 {font-size:28px;}
+.card {padding:15px;}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>🎮 WOBBLY LIFE CENTRUM</h1>
+<p>Wszystko o Wobbly Life w jednym miejscu!</p>
+</header>
+
+<nav>
+<a href="#kino">🎬 Kino</a>
+<a href="#poradniki">📺 Poradniki</a>
+<a href="#prace">💰 Prace</a>
+<a href="#mapa">🗺️ Mapa</a>
+</nav>
+
+<div class="container">
+
+<!-- KINO -->
+
+<section class="card" id="kino">
+<h2>🍿 Wobbly Life Cinema</h2>
+<p>Wybierz film, który chcesz obejrzeć!</p>
+
+<div class="grid">
+
+<a class="movie-item" href="https://youtu.be/eW_YDT-_7FE" target="_blank">
+🧀 A Very Cheesy Romance
+<span class="watch-btn">Oglądaj ↗</span>
+</a>
+
+<a class="movie-item" href="https://youtu.be/f3XxHdgpnlo" target="_blank">
+🕵️ Louie Noir Movie
+<span class="watch-btn">Oglądaj ↗</span>
+</a>
+
+<a class="movie-item" href="https://youtu.be/eco87fQgldg" target="_blank">
+🍌 Monkey Business
+<span class="watch-btn">Oglądaj ↗</span>
+</a>
+
+<a class="movie-item" href="https://youtu.be/5Bea7HPdUdg" target="_blank">
+👻 The Wibbly Wobblys
+<span class="watch-btn">Oglądaj ↗</span>
+</a>
+
+</div>
+
+<br>
+<a href="https://www.youtube.com/playlist?list=PLG5wL9nQoy0ORpNCAiplHhK9lq31gIywQ"
+target="_blank" class="guide-item">
+▶ Otwórz całą playlistę filmów
+</a>
+</section>
+
+<!-- PORADNIKI -->
+
+<section class="card" id="poradniki">
+<h2>📺 Poradniki Wobbly Life</h2>
+<p>Kliknij poradnik, aby znaleźć filmy na YouTube.</p>
+
+<div class="grid">
+
+<a class="guide-item" target="_blank" href="https://www.youtube.com/results?search_query=Wobbly+Life+sekrety">🚀 Sekrety</a>
+
+<a class="guide-item" target="_blank" href="https://www.youtube.com/results?search_query=Wobbly+Life+jak+szybko+zarabiac">💰 Jak szybko zarabiać</a>
+
+<a class="guide-item" target="_blank" href="https://www.youtube.com/results?search_query=Wobbly+Life+osiagniecia">🏆 Osiągnięcia</a>
+
+<a class="guide-item" target="_blank" href="https://www.youtube.com/results?search_query=Wobbly+Life+all+vehicles">🚗 Wszystkie pojazdy</a>
+
+<a class="guide-item" target="_blank" href="https://www.youtube.com/results?search_query=Wobbly+Life+all+outfits">👑 Wszystkie stroje</a>
+
+<a class="guide-item" target="_blank" href="https://www.youtube.com/results?search_query=Wobbly+Life+secret+locations">🗺️ Sekretne miejsca</a>
+
+<a class="guide-item" target="_blank" href="https://www.youtube.com/results?search_query=Wobbly+Life+easter+eggs">👻 Easter eggi</a>
+
+</div>
+</section>
+
+<!-- PRACE -->
+
+<section class="card" id="prace">
+<h2>💰 Prace i zarobki Wobbly Life</h2>
+<p>Kliknij przycisk, aby zobaczyć zarobek!</p>
+<div class="grid" id="jobsGrid"></div>
+</section>
+
+<!-- MAPA -->
+
+<section class="card" id="mapa">
+<h2>🗺️ MAPA WOBBLY LIFE</h2>
+<p>Kliknij nazwę wyspy, aby zobaczyć jej pinezkę!</p>
+
+<div class="map-container">
+
+<img src="https://images.steamusercontent.com/ugc/16461348743948513175/DA93E3AAB3E25E6478BFE14F6FF0B63FA3734F4C/"
+alt="Mapa Wobbly Life">
+
+<button class="map-pin" id="pin-north" style="left:38%;top:28%">📍</button>
+<button class="map-pin" id="pin-farm" style="left:28%;top:47%">📍</button>
+<button class="map-pin" id="pin-jungle" style="left:66%;top:29%">📍</button>
+<button class="map-pin" id="pin-main" style="left:46%;top:60%">📍</button>
+<button class="map-pin" id="pin-neighbourhood" style="left:57%;top:59%">📍</button>
+<button class="map-pin" id="pin-paradise" style="left:65%;top:88%">📍</button>
+
+</div>
+
+<h3>🏝️ Wybierz wyspę:</h3>
+
+<div class="islands">
+<button onclick="showIsland('north')">⛰️ NORTH</button>
+<button onclick="showIsland('farm')">🌾 FARM</button>
+<button onclick="showIsland('jungle')">🌴 JUNGLE</button>
+<button onclick="showIsland('main')">🏙️ MAIN</button>
+<button onclick="showIsland('neighbourhood')">🏠 NEIGHBOURHOOD</button>
+<button onclick="showIsland('paradise')">🏖️ PARADISE</button>
+</div>
+
+<div class="map-info" id="mapInfo">
+<h2 id="mapTitle"></h2>
+<div id="mapJobs"></div>
+</div>
+</section>
+
+</div>
+
+<footer>
+Wobbly Life Centrum 🎮<br>
+Stworzone dla fanów Wobbly Life!
+</footer>
+
+<script>
+
+/* PRACE I ZAROBKI */
+
+const jobs = [
+{name:"🍕 Dostawca pizzy",pay:"20–60 $"},
+{name:"🗑️ Śmieciarz",pay:"60 $"},
+{name:"🚑 Ratownik",pay:"do 80 $"},
+{name:"🍔 Kucharz",pay:"do 60 $"},
+{name:"🛋️ Dostawca mebli",pay:"do 90 $"},
+{name:"📰 Roznoszenie gazet",pay:"50–60 $"},
+{name:"🔥 Strażak",pay:"do 50 $"},
+{name:"🪵 Drwal",pay:"do 120 $"},
+{name:"🚜 Oranie pola",pay:"30–40 $"},
+{name:"🌱 Sadzenie roślin",pay:"30–40 $"},
+{name:"🌾 Zbieranie plonów",pay:"80–90 $"},
+{name:"⛏️ Górnik",pay:"5–60 $ za rudę"},
+{name:"🚕 Taksówkarz",pay:"3–5 $ za kurs"},
+{name:"🎣 Wędkarz",pay:"od 20 $ + wartość ryb"},
+{name:"🏗️ Budowniczy",pay:"38 $"},
+{name:"♻️ Recykling",pay:"40 $"},
+{name:"🎨 Artysta",pay:"60 $"},
+{name:"🧪 Maszyna naukowa",pay:"od 10 $"},
+{name:"🏠 Rozbiórka",pay:"30 $"},
+{name:"🌤️ Badacz pogody",pay:"do 50 $"}
+];
+
+const grid = document.getElementById("jobsGrid");
+
+jobs.forEach((job,index) => {
+    const card = document.createElement("div");
+    card.className = "job-card";
+
+    const title = document.createElement("h3");
+    title.textContent = job.name;
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = "💰 Pokaż zarobek";
+    button.dataset.index = index;
+
+    const pay = document.createElement("div");
+    pay.className = "job-pay";
+    pay.id = "pay" + index;
+    pay.textContent = "Zarobek: " + job.pay;
+
+    card.append(title,button,pay);
+    grid.appendChild(card);
+});
+
+grid.addEventListener("click",function(event) {
+    const button = event.target.closest("button[data-index]");
+    if (!button) return;
+
+    const pay = document.getElementById("pay" + button.dataset.index);
+    pay.classList.toggle("show");
+
+    button.textContent = pay.classList.contains("show")
+        ? "❌ Ukryj zarobek"
+        : "💰 Pokaż zarobek";
+});
+
+/* MAPA I WYSPY */
+
+const islandData = {
+    north: {
+        name:"⛰️ NORTH",
+        jobs:["⛏️ Górnik","🪵 Drwal","🎈 Badacz pogody"]
+    },
+    farm: {
+        name:"🌾 FARM",
+        jobs:["🚜 Oranie pola","🌱 Sadzenie roślin","🌾 Zbieranie plonów"]
+    },
+    jungle: {
+        name:"🌴 JUNGLE",
+        jobs:["🎣 Wędkarstwo","🗺️ Eksploracja wyspy"]
+    },
+    main: {
+        name:"🏙️ MAIN",
+        jobs:["🍕 Dostawca pizzy","🗑️ Śmieciarz","🚑 Ratownik","🍔 Kucharz","🔥 Strażak","🎨 Artysta"]
+    },
+    neighbourhood: {
+        name:"🏠 NEIGHBOURHOOD",
+        jobs:["🍮 Dostawa galaretki","🚕 Taksówkarz","📰 Roznoszenie gazet"]
+    },
+    paradise: {
+        name:"🏖️ PARADISE ISLAND",
+        jobs:["🍦 Lodziarnia","🚁 Ratownictwo"]
+    }
+};
+
+function showIsland(place) {
+    document.querySelectorAll(".map-pin").forEach(pin => {
+        pin.classList.remove("active");
+    });
+
+    const pin = document.getElementById("pin-" + place);
+    if (pin) pin.classList.add("active");
+
+    document.getElementById("mapTitle").textContent =
+        islandData[place].name;
+
+    const jobsBox = document.getElementById("mapJobs");
+    jobsBox.innerHTML = "";
+
+    islandData[place].jobs.forEach(job => {
+        const item = document.createElement("p");
+        item.className = "map-job";
+        item.textContent = "• " + job;
+        jobsBox.appendChild(item);
+    });
+
+    document.getElementById("mapInfo").classList.add("active");
+}
+
+</script>
+
+</body>
+</html>
