@@ -518,3 +518,527 @@ function showIsland(place) {
 
 </body>
 </html>
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wobbly Life Centrum</title>
+
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+ margin:0;
+ background:#0b1020;
+ color:white;
+ font-family:Arial,sans-serif;
+}
+nav{
+ position:sticky;
+ top:0;
+ z-index:10;
+ background:#28577d;
+ display:flex;
+ justify-content:center;
+ gap:25px;
+ padding:17px;
+}
+nav a{
+ color:white;
+ text-decoration:none;
+ font-weight:bold;
+}
+nav a:hover{color:#ffc43d}
+
+.hero{
+ text-align:center;
+ padding:45px 15px;
+ background:linear-gradient(135deg,#28577d,#172b53);
+}
+.hero h1{font-size:32px;margin:0 0 10px}
+
+.container{
+ max-width:950px;
+ margin:30px auto;
+ padding:0 15px;
+}
+.panel{
+ background:#19243a;
+ border:1px solid #344767;
+ border-radius:15px;
+ padding:22px;
+ margin-bottom:25px;
+}
+.panel h2{color:#ffbd37}
+
+.map-placeholder{
+ height:190px;
+ border:2px solid #4384b9;
+ border-radius:12px;
+ background:linear-gradient(135deg,#2674ae,#55a4d5);
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ text-align:center;
+ font-size:25px;
+ font-weight:bold;
+ color:#09233c;
+ margin-bottom:18px;
+}
+.island-title{color:#ffbd37;margin:18px 0 14px}
+.island-buttons{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(110px,1fr));
+ gap:9px;
+}
+.island-buttons button{
+ min-height:55px;
+ background:#1590b6;
+ color:white;
+ border:2px solid #27618c;
+ border-radius:11px;
+ font-weight:bold;
+ cursor:pointer;
+}
+.island-buttons button:hover{
+ background:#20acd1;
+ transform:translateY(-2px);
+}
+.island-buttons .ai-button{
+ background:linear-gradient(135deg,#ffb51e,#ff641c);
+ border:2px solid #ffd04d;
+ color:#172033;
+}
+.island-buttons .ai-button:hover{
+ background:linear-gradient(135deg,#ffd04d,#ff812d);
+}
+.ai-banner{
+ text-align:center;
+ padding:25px 10px;
+ background:linear-gradient(100deg,#ff9b19,#ff641c);
+ color:white;
+ border-radius:13px;
+ margin-bottom:20px;
+}
+.ai-banner h2{margin:0;font-size:27px}
+.ai-banner p{margin:8px 0 0;color:#34200b}
+
+.chat{
+ background:#10192b;
+ border-radius:12px;
+ padding:14px;
+ height:350px;
+ overflow-y:auto;
+ display:flex;
+ flex-direction:column;
+ gap:12px;
+}
+.message{
+ padding:12px 15px;
+ border-radius:12px;
+ max-width:90%;
+ line-height:1.5;
+ white-space:pre-wrap;
+}
+.bot{background:#293a55;align-self:flex-start}
+.user{background:#155b80;align-self:flex-end}
+
+.input-row{
+ display:flex;
+ gap:9px;
+ margin-top:13px;
+}
+input{
+ flex:1;
+ min-width:0;
+ padding:14px;
+ border-radius:9px;
+ border:1px solid #42536f;
+ background:#10182a;
+ color:white;
+ font-size:15px;
+}
+button{cursor:pointer}
+.send{
+ background:#1599cf;
+ color:white;
+ border:0;
+ border-radius:9px;
+ padding:13px 22px;
+ font-weight:bold;
+}
+.categories{
+ display:flex;
+ flex-wrap:wrap;
+ gap:8px;
+ margin-bottom:15px;
+}
+.categories button{
+ background:#304968;
+ color:white;
+ border:0;
+ border-radius:8px;
+ padding:10px;
+}
+#hacks-box{display:none;margin-top:20px}
+.hack{
+ background:#253e3b;
+ border-left:4px solid #46d4a0;
+ padding:12px;
+ border-radius:8px;
+ margin:9px 0;
+ line-height:1.5;
+}
+.small{color:#a9b9d0;font-size:13px}
+
+footer{
+ text-align:center;
+ padding:25px;
+ background:#28577d;
+ color:#d3e4f3;
+ margin-top:40px;
+}
+
+/* ŻADNEGO DOLNEGO MENU */
+footer nav,
+.footer-menu,
+.footer-nav{
+ display:none !important;
+}
+
+@media(max-width:550px){
+ nav{gap:12px;flex-wrap:wrap}
+ nav a{font-size:13px}
+ .input-row{flex-direction:column}
+ .island-buttons{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+
+<body>
+
+<!-- GÓRNE MENU -->
+<nav>
+ <a href="#kino">🎬 Kino</a>
+ <a href="#poradniki">📺 Poradniki</a>
+ <a href="#prace">💰 Prace</a>
+ <a href="#mapa">🗺️ Mapa</a>
+</nav>
+
+<header class="hero">
+ <h1>🎮 WOBBLY LIFE CENTRUM</h1>
+ <p>Wszystko o świecie Wobbly Life w jednym miejscu!</p>
+</header>
+
+<div class="container">
+
+<!-- MAPA I WYSPY -->
+<section class="panel" id="mapa">
+ <h2>🗺️ Mapa Wobbly Life</h2>
+
+ <div class="map-placeholder">
+  🌊 WOBBLY LIFE MAP 🌴
+ </div>
+
+ <h3 class="island-title">🌴 Wybierz wyspę:</h3>
+
+ <div class="island-buttons">
+  <button onclick="island('North')">⛰️ NORTH</button>
+  <button onclick="island('Farm')">🌾 FARM</button>
+  <button onclick="island('Jungle')">🌴 JUNGLE</button>
+  <button onclick="island('Main')">🏙️ MAIN</button>
+  <button onclick="island('Neighbourhood')">🏠 NEIGHBOURHOOD</button>
+  <button onclick="island('Paradise')">🏝️ PARADISE</button>
+
+  <button class="ai-button"
+   onclick="document.getElementById('wobbly-ai').scrollIntoView({behavior:'smooth'})">
+   🤖 WOBBLY AI
+  </button>
+ </div>
+
+ <p class="small" id="island-info">Wybierz wyspę albo otwórz Wobbly AI.</p>
+</section>
+
+<!-- WOBBLY AI -->
+<section class="panel" id="wobbly-ai">
+
+ <div class="ai-banner">
+  <h2>🤖 WOBBLY AI PRO</h2>
+  <p>Twój pomocnik do Wobbly Life</p>
+ </div>
+
+ <h2>👋 Witaj w Wobbly AI!</h2>
+ <p class="small">Zapytaj o sekrety, misje, pieniądze, pojazdy i wiele więcej.</p>
+
+ <div class="categories">
+  <button onclick="ask('Jak zarabiać pieniądze?')">💰 Pieniądze</button>
+  <button onclick="ask('Jak znaleźć sekrety?')">🗺️ Sekrety</button>
+  <button onclick="ask('Jak znaleźć prezenty?')">🎁 Prezenty</button>
+  <button onclick="ask('Jak znaleźć artefakty?')">🏛️ Muzeum</button>
+  <button onclick="ask('Co jest w kosmosie?')">🚀 Kosmos</button>
+  <button onclick="ask('Jakie są pojazdy?')">🚗 Pojazdy</button>
+  <button onclick="ask('Jak zdobyć zwierzaki?')">🐶 Zwierzaki</button>
+  <button onclick="ask('Jak kupić dom?')">🏠 Domy</button>
+  <button onclick="ask('Jakie są misje?')">🎯 Misje</button>
+  <button onclick="ask('Co to jest Arcade?')">🕹️ Arcade</button>
+ </div>
+
+ <div class="chat" id="chat">
+  <div class="message bot">🤖 Cześć! Jestem Wobbly AI PRO!
+
+Zapytaj mnie o Wobbly Life. Podpowiem ci różne sposoby gry i dopasowane hacki!
+
+Możesz zacząć od pytania o pieniądze, sekrety lub misje. 🎮</div>
+ </div>
+
+ <div class="input-row">
+  <input id="question"
+   placeholder="Napisz pytanie o Wobbly Life..."
+   onkeydown="if(event.key==='Enter')send()">
+  <button class="send" onclick="send()">WYŚLIJ</button>
+ </div>
+
+ <div id="hacks-box">
+  <h2>⚡ Hacki dopasowane do pytania</h2>
+  <div id="hacks"></div>
+ </div>
+
+ <p class="small">Bot korzysta z wbudowanej bazy wiedzy i nie pobiera danych z innych stron.</p>
+</section>
+
+<!-- POZOSTAŁE SEKCJE -->
+<section class="panel" id="kino">
+ <h2>🎬 Kino</h2>
+ <p>Witaj w kinie Wobbly Life! Tutaj możesz umieszczać filmy i materiały z gry.</p>
+</section>
+
+<section class="panel" id="poradniki">
+ <h2>📺 Poradniki</h2>
+ <p>Poradniki dotyczące misji, sekretów, pojazdów i eksploracji świata.</p>
+</section>
+
+<section class="panel" id="prace">
+ <h2>💰 Prace</h2>
+ <p>Poznaj różne prace i sposoby zarabiania pieniędzy w Wobbly Life.</p>
+</section>
+
+</div>
+
+<!-- ZWYKŁA STOPKA BEZ PRZYCISKÓW -->
+<footer>
+ Wobbly Life Centrum 🎮<br>
+ Fanowska strona poświęcona Wobbly Life!
+</footer>
+
+<script>
+const database=[
+{
+ keys:["pieniadze","zarabiac","zarabianie","kasa","praca","bogaty","monety"],
+ answer:"💰 ZARABIANIE PIENIĘDZY\n\nW Wobbly Life możesz zarabiać, wykonując różne prace, dostawy i zadania.",
+ hacks:[
+ "Wypróbuj kilka rodzajów pracy i wybierz swoją ulubioną.",
+ "Czytaj cele zadania, żeby nie powtarzać niepotrzebnie etapów.",
+ "Dobieraj pojazdy odpowiednie do wykonywanej pracy."
+ ],
+ pro:"Zarabiaj podczas poznawania mapy."
+},
+{
+ keys:["sekret","sekrety","ukryte","tajemnice","jaskinia","jaskinie"],
+ answer:"🗺️ SEKRETY\n\nW świecie Wobbly Life znajdziesz ukryte miejsca, zagadki i niespodzianki.",
+ hacks:[
+ "Sprawdzaj miejsca za budynkami i poza głównymi drogami.",
+ "Odwiedzaj jaskinie i górskie ścieżki.",
+ "Zwracaj uwagę na nietypowe przedmioty i wejścia."
+ ],
+ pro:"Przeszukuj mapę obszar po obszarze."
+},
+{
+ keys:["prezent","prezenty","paczka","znajdzka","znajdzki"],
+ answer:"🎁 PREZENTY\n\nPrezenty są częścią kolekcji znajdziek w Wobbly Life.",
+ hacks:[
+ "Przeszukuj mapę systematycznie.",
+ "Sprawdzaj nietypowe miejsca i zakamarki.",
+ "Zapisuj sobie obszary, które już sprawdziłeś."
+ ],
+ pro:"Podziel mapę na mniejsze części."
+},
+{
+ keys:["muzeum","artefakt","artefakty","skarb","skarby"],
+ answer:"🏛️ MUZEUM\n\nW Wobbly Life możesz szukać artefaktów i dostarczać je do muzeum.",
+ hacks:[
+ "Dokładnie czytaj wskazówki z map.",
+ "Szukaj charakterystycznych elementów otoczenia.",
+ "Po znalezieniu artefaktu sprawdź kolejne wskazówki."
+ ],
+ pro:"Zwracaj uwagę na szczegóły na mapie skarbów."
+},
+{
+ keys:["kosmos","rakieta","astronauta","planeta","kosmiczny","space"],
+ answer:"🚀 KOSMOS\n\nW Wobbly Life znajduje się obszar kosmiczny związany z programem astronautów.",
+ hacks:[
+ "Odwiedź Centrum Kosmiczne.",
+ "Sprawdź zadania związane z programem astronautów.",
+ "Eksploruj kosmiczny obszar."
+ ],
+ pro:"Traktuj kosmos jak osobny obszar mapy."
+},
+{
+ keys:["pojazd","pojazdy","samochod","auto","motor","motocykl","samolot","helikopter","statek"],
+ answer:"🚗 POJAZDY\n\nW grze dostępne są różne pojazdy, między innymi samochody i pojazdy specjalne.",
+ hacks:[
+ "Dobieraj pojazd do rodzaju terenu.",
+ "Do eksploracji wybieraj pojazd, którym łatwo manewrować.",
+ "Sprawdzaj garaże i miejsca związane z pojazdami."
+ ],
+ pro:"Nie zawsze najszybszy pojazd jest najlepszy."
+},
+{
+ keys:["zwierzak","zwierzaki","zwierze","pies","kot","pet","pupil"],
+ answer:"🐶 ZWIERZAKI\n\nW Wobbly Life możesz zdobywać zwierzaki i mieć je jako towarzyszy.",
+ hacks:[
+ "Sprawdź ofertę sklepu zoologicznego.",
+ "Zwracaj uwagę na zwierzaki dostępne do odblokowania.",
+ "Sprawdź opcje związane z pupilami."
+ ],
+ pro:"Sprawdź dostępne zwierzaki."
+},
+{
+ keys:["dom","domy","mieszkanie","willa","chatka"],
+ answer:"🏠 DOMY\n\nW Wobbly Life możesz kupować różne domy.",
+ hacks:[
+ "Sprawdź lokalizacje i ceny domów.",
+ "Zbieraj pieniądze, wykonując prace.",
+ "Wybierz dom, który najbardziej ci się podoba."
+ ],
+ pro:"Nie musisz od razu kupować najdroższego domu."
+},
+{
+ keys:["misja","misje","zadanie","zadania","quest","zagadki"],
+ answer:"🎯 MISJE\n\nW grze znajdziesz misje fabularne, poboczne zadania i wyzwania.",
+ hacks:[
+ "Dokładnie czytaj polecenia.",
+ "Sprawdzaj okolicę, gdy nie wiesz, co zrobić dalej.",
+ "Porozmawiaj ponownie z postacią, która zleciła zadanie."
+ ],
+ pro:"W misjach zagadkowych obserwuj otoczenie."
+},
+{
+ keys:["arcade","trash zone","hide and seek","wobble run","sandbox"],
+ answer:"🕹️ ARCADE\n\nTryb Arcade zawiera dodatkowe rodzaje zabawy.",
+ hacks:[
+ "Wypróbuj różne tryby.",
+ "Sprawdź dostępne ustawienia rozgrywki.",
+ "Zaproś znajomych do wspólnej zabawy."
+ ],
+ pro:"Arcade to dobry sposób na odpoczynek od zwykłych misji."
+},
+{
+ keys:["znajomy","znajomi","multiplayer","online","wspolnie","kolega","coop"],
+ answer:"👥 GRA ZE ZNAJOMYMI\n\nW Wobbly Life możesz grać samodzielnie lub wspólnie z innymi.",
+ hacks:[
+ "Ustalcie wspólny cel.",
+ "Podzielcie się zadaniami podczas szukania znajdziek.",
+ "Sprawdźcie ustawienia gry wieloosobowej."
+ ],
+ pro:"Wspólna eksploracja może ułatwić odkrywanie świata."
+},
+{
+ keys:["ubranie","ubrania","ciuch","ciuchy","stroj","czapka","koszulka"],
+ answer:"👕 UBRANIA\n\nW Wobbly Life możesz zmieniać wygląd swojej postaci.",
+ hacks:[
+ "Odwiedzaj sklepy z ubraniami.",
+ "Sprawdzaj nagrody za zadania.",
+ "Łącz różne elementy stroju."
+ ],
+ pro:"Niektóre ubrania można zdobyć dzięki postępom w grze."
+}
+];
+
+function normalize(text){
+ return text.toLowerCase()
+ .normalize("NFD")
+ .replace(/[\u0300-\u036f]/g,"")
+ .replace(/ł/g,"l");
+}
+
+function findResult(question){
+ const q=normalize(question);
+ let best=null;
+ let bestScore=0;
+
+ for(const item of database){
+  let score=0;
+  for(const key of item.keys){
+   if(q.includes(normalize(key))) score+=2;
+  }
+  if(score>bestScore){
+   bestScore=score;
+   best=item;
+  }
+ }
+ return best;
+}
+
+function addMessage(text,type){
+ const chat=document.getElementById("chat");
+ const div=document.createElement("div");
+ div.className="message "+type;
+ div.textContent=text;
+ chat.appendChild(div);
+ chat.scrollTop=chat.scrollHeight;
+}
+
+function ask(question){
+ document.getElementById("question").value=question;
+ send();
+}
+
+function send(){
+ const input=document.getElementById("question");
+ const question=input.value.trim();
+ if(!question)return;
+
+ addMessage("🧑 Ty: "+question,"user");
+ input.value="";
+
+ const result=findResult(question);
+
+ if(!result){
+  addMessage(
+   "🤖 Wobbly AI:\n\nNie znalazłem jeszcze odpowiedzi w mojej bazie. Spróbuj zapytać o pieniądze, sekrety, muzeum, kosmos, pojazdy, domy, misje lub zwierzaki.",
+   "bot"
+  );
+  document.getElementById("hacks-box").style.display="none";
+  return;
+ }
+
+ addMessage("🤖 Wobbly AI:\n\n"+result.answer,"bot");
+
+ const hacks=document.getElementById("hacks");
+ hacks.innerHTML="";
+
+ result.hacks.forEach((tip,i)=>{
+  const div=document.createElement("div");
+  div.className="hack";
+  div.textContent="⚡ HACK "+(i+1)+": "+tip;
+  hacks.appendChild(div);
+ });
+
+ const pro=document.createElement("div");
+ pro.className="hack";
+ pro.textContent="⭐ PRO TIP: "+result.pro;
+ hacks.appendChild(pro);
+
+ document.getElementById("hacks-box").style.display="block";
+}
+
+function island(name){
+ document.getElementById("island-info").textContent=
+ "Wybrana wyspa: "+name+". Możesz ją odkrywać w Wobbly Life!";
+}
+</script>
+
+</body>
+</html>
